@@ -1,11 +1,13 @@
 import numpy as np
 import pandas as pd
+import os
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 import tensorflow as tf
 import joblib
 import keyboard
-import os
 import scansegmentapi.compact as CompactApi
 from scansegmentapi.udp_handler import UDPHandler
+
 
 
 class ScanCommunication():
@@ -102,7 +104,7 @@ def main():
     IP = "172.16.35.58"
     PORT = 2122
     SCALE_FACTOR = 60000.0  # Normalizzazione delle distanze
-    PREDICTION_BUFFER_SIZE = 3
+    PREDICTION_BUFFER_SIZE = 1
     MODEL_PATH = 'my_model.h5'
     SCALER_PATH = 'scaler_y.pkl'
 
