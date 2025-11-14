@@ -103,7 +103,7 @@ class ScanCommunication():
 def main():
     IP = "172.16.35.58"
     PORT = 2122
-    SCALE_FACTOR = 60000.0  # Normalizzazione delle distanze
+    SCALE_FACTOR = 5000.0  # Normalizzazione delle distanze
     PREDICTION_BUFFER_SIZE = 1
     MODEL_PATH = 'my_model.h5'
     SCALER_PATH = 'scaler_y.pkl'
@@ -149,8 +149,6 @@ def main():
                         print("▶️ Salvataggio dati di scan disattivato.")
 
                    
-                    
-
                 if keyboard.is_pressed('s'):
                     print("⏹ Interruzione richiesta.")
                     break
