@@ -1,0 +1,45 @@
+include:
+  - project: "GBC08/development/devices/shared/devicescripts/bu83_python_pipeline"
+    ref: 0.13.0
+    file: "build-template.yaml"
+
+variables:
+  PROJECT_NAME: "scansegmentapi"
+
+  ENABLE_PYCODESTYLE: "False"
+  ENABLE_PYLINT: "False" # We don't want to include pylint because of license issues.
+  ENABLE_DEPLOY_TO_ARTIFACTORY: "True"
+  ENABLE_GENERATE_DOCS: "False"
+  ENABLE_RELEASE_DOCS: "False"
+
+  # Vault
+  VAULT_AUTH_ROLE: "gbc08_bu83_readonly"
+  VAULT_SERVER_URL: "https://csxvault.sickcn.net"
+
+  POETRY_VERSION: 1.5.1
+
+.setup_pypi_mirror:
+  before_script:
+    - pip install poetry==${POETRY_VERSION}
+    - poetry source add pypi-mirror https://deagxartifactory.sickcn.net/artifactory/api/pypi/pypi/simple --priority primary
+    - poetry lock --no-update
+
+build_package:
+  before_script:
+    - !reference [.setup_pypi_mirror, before_script]
+
+pycodestyle:
+  before_script:
+    - !reference [.setup_pypi_mirror, before_script]
+
+pylint:
+  before_script:
+    - !reference [.setup_pypi_mirror, before_script]
+
+pytest_linux:
+  before_script:
+    - !reference [.setup_pypi_mirror, before_script]
+
+pytest_windows:
+  before_script:
+    - !reference [.setup_pypi_mirror, before_script]
