@@ -7,6 +7,11 @@ import joblib
 import keyboard
 import scansegmentapi.compact as CompactApi
 from scansegmentapi.udp_handler import UDPHandler
+from sklearn.cluster import DBSCAN
+import feature_extractor
+import data_processor
+
+
 
 
 
@@ -70,6 +75,19 @@ class ScanCommunication():
 
         return np.mean(predictions, axis=0).reshape(1, -1)
     
+    def cluster_detection(self, scans, eps=0.25, min_samples=4):
+        data_processor = data_processor.DataProcessor(eps=eps, min_samples=min_samples)
+        cluster_label = data_processor._apply_clustering(scans)
+        features= feature_extractor.FeatureExtractor(scans, cluster_label)
+        return features
+        
+        
+
+    def cluster_classification(self, clusters, model_classifier):
+        classified_clusters = {}
+        
+        pass
+    
     # -------------------------
     #  Funzioni di salvataggio
     # -------------------------
@@ -95,6 +113,8 @@ class ScanCommunication():
         filepath = os.path.join(directory, filename)
         df_results.to_csv(filepath, index=False)
         print(f"✅ File salvato: {filename}")
+
+       
 
 
 # -------------------------
