@@ -204,6 +204,7 @@ import os
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 import tensorflow as tf
 import joblib
+import matplotlib.pyplot as plt
 import keyboard
 import scansegmentapi.compact as CompactApi
 from scansegmentapi.udp_handler import UDPHandler
@@ -406,6 +407,85 @@ class ScanCommunication():
         print(f"Risultati salvati: {filepath}")
 
 
+class LidarVisualizer:
+    """Classe per visualizzazione real-time dei dati LiDAR."""
+    
+    def __init__(self, localization_labels=[1, 2]):
+        self.localization_labels = localization_labels
+        self.fig, self.ax = plt.subplots(figsize=(10, 10))
+        self.setup_plot()
+        
+    def setup_plot(self):
+        """Configura il plot."""
+        self.ax.set_xlim(-10, 10)
+        self.ax.set_ylim(-10, 10)
+        self.ax.set_aspect('equal')
+        self.ax.grid(True, alpha=0.3)
+        self.ax.set_xlabel('X (m)')
+        self.ax.set_ylabel('Y (m)')
+        self.ax.set_title('LiDAR Real-time Visualization')
+        
+        # Robot al centro
+        self.ax.plot(0, 0, 'ro', markersize=10, label='Robot')
+        
+        # Legenda
+        self.ax.plot([], [], 'go', markersize=8, label='Landmark')
+        self.ax.plot([], [], 'o', color='gray', markersize=8, label='Altri cluster')
+        self.ax.plot([], [], '.', color='lightgray', markersize=3, label='Rumore')
+        self.ax.legend(loc='upper right')
+        
+        plt.ion()
+        plt.show()
+    
+    def update(self, angles, scans, cluster_data):
+        """Aggiorna la visualizzazione."""
+        self.ax.clear()
+        self.setup_plot()
+        
+        # Converti scansioni in coordinate cartesiane
+        x = scans * np.cos(angles)
+        y = scans * np.sin(angles)
+        
+        # Plot tutti i punti (leggeri)
+        self.ax.plot(x, y, '.', color='lightgray', markersize=1, alpha=0.3)
+        
+        # Plot cluster
+        if cluster_data['clusters']:
+            for cluster in cluster_data['clusters']:
+                points = cluster['centroid']
+                is_landmark = cluster['class_label'] in self.localization_labels
+                
+                color = 'green' if is_landmark else 'gray'
+                marker_size = 12 if is_landmark else 8
+                
+                # Plot punti del cluster
+                cluster_points = []
+                for idx in cluster['original_indices']:
+                    if idx < len(x):
+                        cluster_points.append([x[idx], y[idx]])
+                
+                if cluster_points:
+                    cluster_points = np.array(cluster_points)
+                    self.ax.plot(cluster_points[:, 0], cluster_points[:, 1], 
+                               'o', color=color, markersize=3, alpha=0.6)
+                
+                # Plot centroide
+                self.ax.plot(points[0], points[1], 'o', color=color, 
+                           markersize=marker_size, markeredgecolor='black', markeredgewidth=1)
+                
+                # Label del cluster
+                label_text = f"C{cluster['cluster_id']}: L{cluster['class_label']}"
+                self.ax.text(points[0], points[1] + 0.3, label_text, 
+                           fontsize=8, ha='center', 
+                           bbox=dict(boxstyle='round,pad=0.3', facecolor=color, alpha=0.5))
+        
+        plt.pause(0.001)
+    
+    def close(self):
+        """Chiude la finestra."""
+        plt.close(self.fig)
+
+
 def main():
     # Parametri
     IP = "172.16.35.58"
@@ -420,6 +500,7 @@ def main():
     LIDAR_RANGE = 10.0
     LOCALIZATION_LABELS = [1, 2]
     NON_LANDMARK_VALUE = 0.0
+    ENABLE_VISUALIZATION = True
     
     # Inizializzazione
     scan_comm = ScanCommunication(
@@ -436,6 +517,8 @@ def main():
     flag_save_scans = False
     frame_counter = 0
 
+    visualizer = LidarVisualizer(LOCALIZATION_LABELS) if ENABLE_VISUALIZATION else None
+
     print(f"Sistema avviato | Labels landmark: {LOCALIZATION_LABELS}")
     print("Comandi: 's'=stop | 'a'=toggle salvataggio scans\n")
 
@@ -447,6 +530,8 @@ def main():
                 
                 # 2. Clustering e classificazione
                 cluster_data = scan_comm.cluster_detection_and_classification(theta, distances_raw)
+                if visualizer:
+                    visualizer.update(theta, distances_raw, cluster_data)
                 
                 # 3. Filtraggio punti
                 filtered_distances, landmark_clusters = scan_comm.filter_lidar_by_landmarks(distances_raw, cluster_data)
@@ -496,6 +581,10 @@ def main():
 
     finally:
         print(f"\nChiusura | Frame processati: {frame_counter}")
+
+        if visualizer:
+            visualizer.close()
+
         receiver.close_connection()
         scan_comm.save_results(df_results)
 
