@@ -27,19 +27,25 @@ class DataProcessor:
         cluster_labels = np.array([])
         
         if len(valid_scans) > 0:
-            # Converti in coordinate mondiali
+            # Converti in coordinate mondiali (per visualizzazione)
             world_angles = robot_pose[2] + valid_angles
-            points_x = robot_pose[0] + (valid_scans + noise) * np.cos(world_angles) 
-            points_y = robot_pose[1] + (valid_scans + noise) * np.sin(world_angles) 
-            points = np.vstack((points_x, points_y)).T
-            
+            points_x_global = robot_pose[0] + (valid_scans + noise) * np.cos(world_angles) 
+            points_y_global = robot_pose[1] + (valid_scans + noise) * np.sin(world_angles) 
+            points_global = np.vstack((points_x_global, points_y_global)).T
+
+
+            # Coordinate locali (calcolo features e clustering)
+            local_angles = valid_angles
+            points_x_local = (valid_scans + noise) * np.cos(local_angles) 
+            points_y_local = (valid_scans + noise) * np.sin(local_angles) 
+            points_local = np.vstack((points_x_local, points_y_local)).T
             # Salva i punti nella storia
-            self.lidar_points_history.append(points)
+            self.lidar_points_history.append(points_global)
             
             # Applica clustering DBSCAN
-            cluster_labels = self._apply_clustering(points)
+            cluster_labels = self._apply_clustering(points_local)
         
-        return points, cluster_labels
+        return points_global, cluster_labels, points_local
     
     def _apply_clustering(self, points):
         """Applica l'algoritmo DBSCAN ai punti"""
