@@ -6,8 +6,8 @@ def calculate_cluster_features(points, cluster_id):
     """
     Calcola tutte le features geometriche per un cluster di punti
     """
-    if len(points) < 3:
-        return None
+    # if len(points) < 3:
+    #     return None
     
     features = {}
     features['cluster_id'] = cluster_id
@@ -48,8 +48,8 @@ def calculate_cluster_features(points, cluster_id):
 
 def calculate_perimeter(points):
     """Calcola il perimetro di un poligono definito da punti ordinati"""
-    if len(points) < 3:
-        return 0
+    #if len(points) < 3:
+        #return 0
     perimeter = 0
     for i in range(len(points)):
         p1 = points[i]
@@ -59,8 +59,8 @@ def calculate_perimeter(points):
 
 def calculate_mean_curvature(points):
     """Calcola la curvatura media del cluster"""
-    if len(points) < 3:
-        return 0
+    # if len(points) < 3:
+    #     return 0
     
     # Ordina i punti per distanza dal centroide (approssimazione)
     centroid = np.mean(points, axis=0)
