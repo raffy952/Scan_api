@@ -61,7 +61,7 @@ class ScanCommunication():
         ], axis=0)
 
         distances_normalized = distances[:1105].T / self.scale_factor
-        distances_raw = distances[:1105].flatten()
+        distances_raw = distances[:1105].flatten() / 1000.0
         theta_flat = theta[:1105].flatten()
         
         return theta_flat, distances_raw, distances_normalized
@@ -84,8 +84,7 @@ class ScanCommunication():
         cluster_labels = self.data_processor._apply_clustering(points)
         n_clusters, n_noise = self.data_processor.get_cluster_info(cluster_labels)
         centroids = self.data_processor.extract_centroids(points, cluster_labels)
-        
-        # Classifica ogni cluster
+       
         cluster_results = []
         
         if n_clusters > 0:
@@ -332,7 +331,7 @@ def main():
             try:
                 # 1. Acquisizione dati
                 theta, distances_raw, distances_normalized = scan_comm.receive_lidar_data(receiver)
-                
+                print(np.isnan(distances_raw).any())
                 # 2. Clustering e classificazione
                 cluster_data = scan_comm.cluster_detection_and_classification(
                     theta, distances_raw
