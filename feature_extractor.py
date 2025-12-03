@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.decomposition import PCA
 from scipy.spatial import ConvexHull
 
-def calculate_cluster_features(points, cluster_id):
+def calculate_cluster_features(points):
     """
     Calcola tutte le features geometriche per un cluster di punti
     """
@@ -10,7 +10,7 @@ def calculate_cluster_features(points, cluster_id):
     #     return None
     
     features = {}
-    features['cluster_id'] = cluster_id
+    #features['cluster_id'] = cluster_id
     features['num_points'] = len(points)
     
     # 1. Bounding box per lunghezza e larghezza

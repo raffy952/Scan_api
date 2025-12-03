@@ -20,7 +20,7 @@ segment_counters = []
 while True:
     
     segment, frame_number, segment_counter = receiver.receive_segments(1)
-     #print(segments[0])
+    #print(segments[0])
     #print(f'Info segmenti: {segments[0]["Modules"][0]["NumberOfBeamsPerScan"]}')
     #print(f'Segment counters: {segment_counters}')
     #print(f'Frame numbers: {frame_numbers}')
@@ -28,8 +28,24 @@ while True:
     frame_numbers.append(frame_number[0])
     segment_counters.append(segment_counter[0])
     #print(frame_number[0])
-    if len(frame_numbers) == 10 & len(segment_counters) == 10:#  & np.all(np.array(frame_numbers) == frame_numbers[0]) & np.all(segment_counters[:-1] < segment_counters[1:]):
-        print("Ricevuti 10 segmenti di uno stesso frame in ordine corretto:")
+    if len(frame_numbers) == 10 and len(segment_counters) == 10:#  & np.all(np.array(frame_numbers) == frame_numbers[0]) & np.all(segment_counters[:-1] < segment_counters[1:]):
+        if np.all(np.array(frame_numbers) == frame_numbers[0]):
+            if np.all(np.array(segment_counters[:-1]) < np.array(segment_counters[1:])):
+                print("Ricevuti 10 segmenti di uno stesso frame in ordine corretto")
+                print(f'Frame number: {frame_numbers}')
+                print(f'Segment counters: {segment_counters}')
+                frame_numbers = []
+                segment_counters = []
+                segments = []
+                
+
+
+        else:
+            mask = np.array(frame_numbers) != frame_numbers[0]
+            frame_numbers = list(np.array(frame_numbers)[mask])
+            segment_counters = list(np.array(segment_counters)[mask])
+            segments = list(np.array(segments)[mask])
+
         
 
 

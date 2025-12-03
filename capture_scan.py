@@ -331,7 +331,7 @@ def main():
             try:
                 # 1. Acquisizione dati
                 theta, distances_raw, distances_normalized = scan_comm.receive_lidar_data(receiver)
-                print(np.isnan(distances_raw).any())
+                #print(np.isnan(distances_raw).any())
                 # 2. Clustering e classificazione
                 cluster_data = scan_comm.cluster_detection_and_classification(
                     theta, distances_raw
