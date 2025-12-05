@@ -107,8 +107,7 @@
               "RelativeToolTip": "test_lidar.py",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2025-12-03T15:25:22.726Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-03T15:25:22.726Z"
             },
             {
               "$type": "Document",
@@ -120,8 +119,7 @@
               "RelativeToolTip": "feature_extractor.py",
               "ViewState": "AgIAACcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2025-12-01T16:25:02.5Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T16:25:02.5Z"
             },
             {
               "$type": "Document",
@@ -143,7 +141,7 @@
               "RelativeDocumentMoniker": "test_lidar_segments_chat.py",
               "ToolTip": "C:\\Users\\raffaele_ragno\\Desktop\\sick_scan_ws\\ScanSegmentAPI\\test_lidar_segments_chat.py",
               "RelativeToolTip": "test_lidar_segments_chat.py",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAACAAAAAgAAAAAAAAAA==",
+              "ViewState": "AgIAAJ8AAAAAAAAAAAAAACAAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
               "WhenOpened": "2025-11-28T16:28:11.927Z",
               "EditorCaption": ""
@@ -156,18 +154,6 @@
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{4a8466fe-5a05-4f81-ad45-7d7c1316817e}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{f4fc5ff1-28ef-4b04-ad02-6b298310ccc7}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{605322a2-17ae-43f4-b60f-766556e46c87}"
-            },
-            {
-              "$type": "Bookmark",
               "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             },
             {
@@ -177,6 +163,18 @@
             {
               "$type": "Bookmark",
               "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{4a8466fe-5a05-4f81-ad45-7d7c1316817e}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{f4fc5ff1-28ef-4b04-ad02-6b298310ccc7}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{605322a2-17ae-43f4-b60f-766556e46c87}"
             }
           ]
         }
