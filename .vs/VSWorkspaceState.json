@@ -1,7 +1,8 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\scansegmentapi"
   ],
-  "SelectedNode": "\\test_lidar_segments_chat.py",
+  "SelectedNode": "\\model_final_10000_180_angles_std_5.h5",
   "PreviewInSolutionExplorer": false
 }

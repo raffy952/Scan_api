@@ -32,6 +32,7 @@ model_path = 'best_params_180.pkl'
 model = joblib.load(model_path)
 scaler = joblib.load('scaler_y.pkl')
 model_reg = load_model('my_model_10000.h5')
+#model_reg = load_model('model_final_10000_180_angles_std_5.h5')
 labels_to_keep = [1, 2]
 
 # Ordine delle feature utilizzate dal modello
@@ -90,7 +91,7 @@ def main():
         frame_numbers.append(frame_number[0])
         segment_counters.append(segment_counter[0])
         # Controlla se abbiamo 10 segmenti dello stesso frame in ordine
-        if len(frame_numbers) == 6 and len(segment_counters) == 6:
+        if len(frame_numbers) == 7 and len(segment_counters) == 7:
             if np.all(np.array(frame_numbers) == frame_numbers[0]):
                 if np.all(np.array(segment_counters[:-1]) < np.array(segment_counters[1:])):
 
@@ -103,17 +104,22 @@ def main():
                         seg["Modules"][0]["SegmentData"][0]["Distance"][0] 
                         for seg in segments
                     ]).reshape(1, -1)
-                    np.save('distances2.npy', distances)
+                    np.save('distances3.npy', distances)
 
                     thetas = np.vstack([
                         seg["Modules"][0]["SegmentData"][0]["ChannelTheta"] 
                         for seg in segments
                     ]).reshape(1, -1)
-                    np.save('thetas2.npy', thetas)
+                    np.save('thetas3.npy', thetas)
                     #print(thetas)
+                    mask = (thetas > (-np.pi-0.004)/2) & (thetas < (np.pi+0.004)/2)
+
+                    thetas = thetas[mask]
+                    distances = distances[mask]
+                    print(np.rad2deg(thetas))
                     x = distances * np.sin(thetas) / 1000.0
                     y = distances * np.cos(thetas) / 1000.0
-                
+                    
                     pts = np.column_stack((x.flatten(), y.flatten()))
                     #print(pts)
                     print(f"Numero punti scan ricostruito: {pts.shape[0]}")
@@ -181,14 +187,17 @@ def main():
                         # DISEGNA CLUSTER
                         # ===============================
                         plt.scatter(cluster_pts[:, 0], cluster_pts[:, 1], s=8, color=col, label=f"{classification} {prob:.3f}")
-                
-                    filtered_points = np.where(np.isin(labels, labels_to_keep)[:, None], pts, 0.0)
-                    pd.DataFrame(filtered_points).to_csv('filtered_points.csv', index=False)
-                    filtered_distances = np.linalg.norm(filtered_points, axis=1)
+                    
+                    print(np.isin(labels, labels_to_keep))
+                    filtered_distances = np.where(np.isin(labels, labels_to_keep), distances, 0.0) / 1000.0
+                    #pd.DataFrame(filtered_points).to_csv('filtered_points.csv', index=False)
+                    #filtered_distances = np.linalg.norm(filtered_points, axis=1)
                     filtered_distances = np.where(filtered_distances == 0.0, 60.0, filtered_distances)
                     #print(filtered_distances)
                     filtered_distances_padded = pad_center(filtered_distances, 1105).reshape(1,-1)
-                    print(filtered_distances_padded)
+                    print(np.max(filtered_distances_padded))
+                    print(np.min(filtered_distances_padded))
+                    pd.DataFrame(filtered_distances_padded).to_csv('filtered_distances.csv', index=False)
                     np.save('filtered_distances.npy', filtered_distances_padded)
                     prediction_scaled = model_reg.predict(filtered_distances_padded / (60.0))
                     prediction = scaler.inverse_transform(prediction_scaled)   
@@ -203,16 +212,16 @@ def main():
 
                     legend_elements = [
                         Line2D([0], [0], linestyle='None',
-                               label=f"x: {prediction[0,1]:.3f}"),
+                               label=f"x: {prediction[0,0]:.3f}"),
                         Line2D([0], [0], linestyle='None',
-                               label=f"y: {prediction[0,0]:.3f}"),
+                               label=f"y: {prediction[0,1]:.3f}"),
                         Line2D([0], [0], linestyle='None',
                                label=f"theta: {prediction[0,2]:.3f}")
                     ]
 
                     plt.legend(handles=legend_elements, loc="lower right", fontsize=8)
 
-                    plt.scatter(filtered_points[:, 0], filtered_points[:, 1], s=2, color='blue', alpha=0.3, label="Filtered points")
+                    #plt.scatter(filtered_points[:, 0], filtered_points[:, 1], s=2, color='blue', alpha=0.3, label="Filtered points")
 
                     #plt.legend(loc="upper right", fontsize=8)
                     plt.show()
