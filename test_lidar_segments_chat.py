@@ -30,9 +30,9 @@ receiver = CompactApi.Receiver(transport)
 # Carica modello
 model_path = 'best_params_180.pkl'
 model = joblib.load(model_path)
-scaler = joblib.load('scaler_y.pkl')
-model_reg = load_model('my_model_10000.h5')
-#model_reg = load_model('model_final_10000_180_angles_std_5.h5')
+scaler = joblib.load('scaler_y_std_180_std_5.pkl')
+#model_reg = load_model('my_model_10000.h5')
+model_reg = load_model('model_final_10000_180_angles_std_5.h5')
 labels_to_keep = [1, 2]
 
 # Ordine delle feature utilizzate dal modello
@@ -57,7 +57,7 @@ def pad_center(arr, X):
     left = total_pad // 2
     right = total_pad - left   # garantisce correttezza anche per X dispari
 
-    return np.pad(arr, (left, right), mode='constant', constant_values=60.0)
+    return np.pad(arr, (left, right), mode='constant', constant_values=0.0)
 
 def check_regression_boundaries(centroid_1, centroid_2):
 
@@ -192,14 +192,14 @@ def main():
                     filtered_distances = np.where(np.isin(labels, labels_to_keep), distances, 0.0) / 1000.0
                     #pd.DataFrame(filtered_points).to_csv('filtered_points.csv', index=False)
                     #filtered_distances = np.linalg.norm(filtered_points, axis=1)
-                    filtered_distances = np.where(filtered_distances == 0.0, 60.0, filtered_distances)
+                    #filtered_distances = np.where(filtered_distances == 0.0, 60.0, filtered_distances)
                     #print(filtered_distances)
-                    filtered_distances_padded = pad_center(filtered_distances, 1105).reshape(1,-1)
-                    print(np.max(filtered_distances_padded))
-                    print(np.min(filtered_distances_padded))
-                    pd.DataFrame(filtered_distances_padded).to_csv('filtered_distances.csv', index=False)
-                    np.save('filtered_distances.npy', filtered_distances_padded)
-                    prediction_scaled = model_reg.predict(filtered_distances_padded / (60.0))
+                    filtered_distances= filtered_distances.reshape(1,-1)
+                    #print(np.max(filtered_distances_padded))
+                    #print(np.min(filtered_distances_padded))
+                    #pd.DataFrame(filtered_distances_padded).to_csv('filtered_distances.csv', index=False)
+                    #np.save('filtered_distances.npy', filtered_distances_padded)
+                    prediction_scaled = model_reg.predict(filtered_distances / (5.0))
                     prediction = scaler.inverse_transform(prediction_scaled)   
                     print(prediction)
                     plt.scatter(prediction[0,1], prediction[0,0], color='red', alpha=1.0, marker='x')
