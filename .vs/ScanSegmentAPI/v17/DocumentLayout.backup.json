@@ -30,7 +30,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Bookmark",
@@ -51,6 +51,10 @@
             {
               "$type": "Bookmark",
               "Name": "ST:133:0:{1fc202d4-d401-403c-9834-5b218574bb67}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
             },
             {
               "$type": "Document",
@@ -75,8 +79,7 @@
               "RelativeToolTip": "scansegmentapi_cli.py",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2025-12-03T15:25:27.16Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-03T15:25:27.16Z"
             },
             {
               "$type": "Document",
@@ -88,8 +91,7 @@
               "RelativeToolTip": "test_lidar.py",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2025-12-03T15:25:22.726Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-03T15:25:22.726Z"
             },
             {
               "$type": "Document",
@@ -101,8 +103,7 @@
               "RelativeToolTip": "feature_extractor.py",
               "ViewState": "AgIAAEgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2025-12-01T16:25:02.5Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-12-01T16:25:02.5Z"
             },
             {
               "$type": "Document",
@@ -112,7 +113,7 @@
               "RelativeDocumentMoniker": "test_lidar_segments_chat.py",
               "ToolTip": "C:\\Users\\raffaele_ragno\\Desktop\\sick_scan_ws\\ScanSegmentAPI\\test_lidar_segments_chat.py",
               "RelativeToolTip": "test_lidar_segments_chat.py",
-              "ViewState": "AgIAACsAAAAAAAAAAAAAADsAAABIAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
               "WhenOpened": "2025-11-28T16:28:11.927Z",
               "EditorCaption": ""

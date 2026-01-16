@@ -1,6 +1,8 @@
 import numpy as np
 from sklearn.decomposition import PCA
 from scipy.spatial import ConvexHull
+#from rectangle_detector import RectangleDetector
+
 
 def calculate_cluster_features(points):
     """
@@ -12,6 +14,7 @@ def calculate_cluster_features(points):
     features = {}
     #features['cluster_id'] = cluster_id
     features['num_points'] = len(points)
+    
     
     # 1. Bounding box per lunghezza e larghezza
     min_x, max_x = np.min(points[:, 0]), np.max(points[:, 0])
@@ -43,6 +46,8 @@ def calculate_cluster_features(points):
     
     # 5. Curvatura media
     features['mean_curvature'] = calculate_mean_curvature(points)
+
+    #features['rectangle_is_fitted'] = rectangle_is_fitted(np.mean(points))   # Placeholder, da calcolare esternamente
     
     return features
 
@@ -96,3 +101,6 @@ def calculate_mean_curvature(points):
             continue
     
     return np.mean(curvatures) if curvatures else 0
+
+
+    
