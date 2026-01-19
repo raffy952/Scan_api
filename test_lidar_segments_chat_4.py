@@ -24,6 +24,8 @@ SCALER = joblib.load('scaler_y.pkl')
 REGRESSION_MODEL = load_model('my_model_10000.h5')
 LABELS_TO_KEEP = [1, 2]
 WIDTH_RECTANGLE = 1.69  # meters
+WIDTH_PALLET_COMPLETE1 = 3200
+WIDTH_PALLET_COMPLETE2 = 2800
 HEIGHT_RECTANGLE = 1.80  # meters
 TOLERANCE = 0.1  # meters
 
@@ -53,16 +55,19 @@ class CaptureLidarData:
             #properties = CompactApi.RPLidarProperties()
         else:
             raise ValueError("Unsupported LIDAR type")
+        return
     
     def get_scan(self):
         if self.lidar_type == 'sick':
-            segment, frame_number, segment_counter = self.receive.receive_segment(1)
+            segment, frame_number, segment_counter = self.receive.receive_segments(1)
             return segment, frame_number, segment_counter
             
         elif self.lidar_type == 'rplidar':
             pass
         else:
             raise ValueError("Unsupported LIDAR type")
+        
+        #return segment, frame_number, segment_counter
 
 
 
@@ -112,6 +117,35 @@ class LidarScanProcessor:
             }
 
         return classified_clusters
+
+    def filter_label1_pairs(self, clusters_info, max_width1, max_width2, tolerance):
+        clusters_info = clusters_info.copy()
+
+        label1_clusters = [
+            lab for lab, info in clusters_info.items()
+            if info['classification'] == 1
+        ]
+
+        valid_label = None
+
+        for lab in label1_clusters:
+            dist_x = clusters_info[lab]['points'][:, 0]
+            width = dist_x.max() - dist_x.min()
+
+            if (abs(width - max_width1) <= tolerance or
+                abs(width - max_width2) <= tolerance):
+                valid_label = lab
+                break
+
+        # Remove all other label-1 clusters
+        for lab in list(clusters_info.keys()):  # ← safe iteration
+            if clusters_info[lab]['classification'] == 1:
+                if valid_label is not None and lab != valid_label:
+                    clusters_info.pop(lab)
+
+        return clusters_info
+
+        
 
     def filter_label2_pairs(self, clusters_info, max_dist, tolerance):
 
@@ -221,9 +255,9 @@ def main():
 
     while True:
         segment, frame_number, segment_counter = lidar_capture.get_scan()
-        segments.append(segment)
-        frame_numbers.append(frame_number)
-        segment_counters.append(segment_counter)
+        segments.append(segment[0])
+        frame_numbers.append(frame_number[0])
+        segment_counters.append(segment_counter[0])
 
         # Controlla se abbiamo 7 segmenti dello stesso frame in ordine
         if len(frame_numbers) == 7 and len(segment_counters) == 7:
@@ -250,12 +284,17 @@ def main():
                     labels = lidar_processor.get_clusters(x, y)
                     classified_clusters = lidar_processor.classify_clusters(x, y, labels)
 
-                    label_2_filtered = lidar_processor.filter_label2_pairs(classified_clusters, labels, WIDTH_RECTANGLE, TOLERANCE)
-                    filtered_distances = np.where(np.isin(label_2_filtered, LABELS_TO_KEEP), distances, 0)
+                    label_1_filtered = lidar_processor.filter_label1_pairs(classified_clusters, WIDTH_PALLET_COMPLETE1, WIDTH_PALLET_COMPLETE2, TOLERANCE)
+                    label_2_filtered = lidar_processor.filter_label2_pairs(label_1_filtered, WIDTH_RECTANGLE, TOLERANCE)
+                    try:
+                        filtered_distances = np.where(np.isin(label_2_filtered, LABELS_TO_KEEP), distances, 0)
 
-                    prediction = lidar_processor.pose_estimation(filtered_distances)
+                        prediction = lidar_processor.pose_estimation(filtered_distances)
 
-                    lidar_visualizer.plot_settings(ax, classified_clusters['points'], prediction)
+                        lidar_visualizer.plot_settings(ax)
+                        lidar_visualizer.plot_points(ax, classified_clusters['points'], prediction)
+                    except:
+                        print("Nessuna coppia valida trovata.")
 
 
                     frame_numbers = []
