@@ -1,0 +1,29 @@
+lidar:
+  type: 'sick'
+  ip: '172.16.35.58'
+  port: 2122
+
+dbscan:
+  eps: 0.25
+  min_samples: 4
+
+models:
+  classification: 'best_params_180.pkl'
+  scaler: 'scaler_y.pkl'
+  regression: 'my_model_10000.h5'
+
+dimensions:
+  width_rectangle: 1.69
+  width_pallet_1: 3.200
+  width_pallet_2: 2.800
+  tolerance: 0.1
+
+feature_order:
+  parameters:
+    - 'num_points'
+    - 'pca_length'
+    - 'pca_width'
+    - 'convex_area'
+    - 'convex_perimeter'
+    - 'aspect_ratio'
+    - 'mean_curvature'

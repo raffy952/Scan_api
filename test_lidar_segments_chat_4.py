@@ -17,26 +17,38 @@ from tensorflow.keras.models import load_model
 from feature_extractor import calculate_cluster_features
 import warnings
 from matplotlib.lines import Line2D
+import yaml
 warnings.filterwarnings("ignore")
 
 
 #warnings.filterwarnings("ignore", message="X does not have valid feature names")
 
 # --- CONFIGURATION ---
-LIDAR_TYPE = 'sick'
-IP = '172.16.35.58'
-PORT = 2122
-EPS = 0.25
-MIN_SAMPLES = 4
-CLASSIFICATION_MODEL = joblib.load('best_params_180.pkl')
-SCALER = joblib.load('scaler_y.pkl')
-REGRESSION_MODEL = load_model('my_model_10000.h5')
-LABELS_TO_KEEP = [1, 2]
-WIDTH_RECTANGLE = 1.69
-WIDTH_PALLET_COMPLETE1 = 3.200 
-WIDTH_PALLET_COMPLETE2 = 2.800
-TOLERANCE = 0.1
-FEATURE_ORDER = ['num_points', 'pca_length', 'pca_width', 'convex_area', 'convex_perimeter', 'aspect_ratio', 'mean_curvature']
+def load_config(config_path='config.yml'):
+    with open(config_path, 'r') as file:
+        return yaml.safe_load(file)
+
+# Caricamento della configurazione
+config = load_config()
+
+# --- ASSEGNAZIONE PARAMETRI DA CONFIG ---
+LIDAR_TYPE = config['lidar']['type']
+IP = config['lidar']['ip']
+PORT = config['lidar']['port']
+
+EPS = config['dbscan']['eps']
+MIN_SAMPLES = config['dbscan']['min_samples']
+
+# Caricamento modelli usando i percorsi nel YAML
+CLASSIFICATION_MODEL = joblib.load(config['models']['classification'])
+SCALER = joblib.load(config['models']['scaler'])
+REGRESSION_MODEL = load_model(config['models']['regression'])
+
+WIDTH_RECTANGLE = config['dimensions']['width_rectangle']
+WIDTH_PALLET_COMPLETE1 = config['dimensions']['width_pallet_1']
+WIDTH_PALLET_COMPLETE2 = config['dimensions']['width_pallet_2']
+TOLERANCE = config['dimensions']['tolerance']
+FEATURE_ORDER = config['feature_order']['parameters']
 
 class CaptureLidarData:
     def __init__(self, ip="172.16.35.58", port=2122, lidar_type='sick'):
