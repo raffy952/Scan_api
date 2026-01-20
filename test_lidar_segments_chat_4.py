@@ -4,12 +4,23 @@ from sklearn.cluster import DBSCAN
 import scansegmentapi.compact as CompactApi
 from scansegmentapi.udp_handler import UDPHandler
 import joblib
+import os
+import logging
+
+os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+
+logging.getLogger("tensorflow").setLevel(logging.ERROR)
+logging.getLogger("absl").setLevel(logging.ERROR)
+
 from tensorflow.keras.models import load_model
 from feature_extractor import calculate_cluster_features
 import warnings
 from matplotlib.lines import Line2D
+warnings.filterwarnings("ignore")
 
-warnings.filterwarnings("ignore", message="X does not have valid feature names")
+
+#warnings.filterwarnings("ignore", message="X does not have valid feature names")
 
 # --- CONFIGURATION ---
 LIDAR_TYPE = 'sick'
