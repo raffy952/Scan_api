@@ -17,6 +17,10 @@ class CaptureLidarData:
         if self.lidar_type == 'sick':
             self.transport = UDPHandler(self.ip, self.port, 65535)
             self.receive = CompactApi.Receiver(self.transport)
+
+        elif self.lidar_type == 'r2000':
+            pass
+
         else:
             raise ValueError("Unsupported LIDAR type")
 
