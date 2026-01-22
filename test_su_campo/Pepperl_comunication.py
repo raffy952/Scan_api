@@ -78,7 +78,7 @@ class R2000TcpClient:
                     await asyncio.sleep(5)
 
     async def connect_and_receive_data(self, state_report: StateDev):
-        sensor_ip = "169.254.156.91"
+        sensor_ip = "169.254.62.51"
         config = SensorConfig()
 
         # Configurazione via HTTP
